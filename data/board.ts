@@ -1,4 +1,4 @@
-export type TileType = "start" | "task" | "event" | "resource" | "special";
+export type TileType = "start" | "event" | "resource" | "special";
 
 export type BoardTile = {
   type: TileType;
@@ -11,33 +11,32 @@ export const BOARD_SIZE = 22;
 
 /** Clockwise path starting from the top-left Start tile */
 export const boardPath: BoardTile[] = [
-  { type: "start", label: "GO" },
-  { type: "resource", label: "$" },
-  { type: "task", label: "—" },
-  { type: "event", label: "!" },
-  { type: "resource", label: "$" },
-  { type: "event", label: "!" },
-  { type: "special", label: "★" },
-  { type: "event", label: "!" },
-  { type: "event", label: "!" },
-  { type: "resource", label: "$" },
-  { type: "event", label: "!" },
-  { type: "special", label: "★" },
-  { type: "event", label: "!" },
-  { type: "resource", label: "$" },
-  { type: "task", label: "—" },
-  { type: "resource", label: "$" },
-  { type: "event", label: "!" },
-  { type: "special", label: "★" },
-  { type: "event", label: "!" },
-  { type: "resource", label: "$" },
-  { type: "task", label: "—" },
-  { type: "event", label: "!" },
+  { type: "start", label: "Start" },
+  { type: "resource", label: "Resource" },
+  { type: "event", label: "Event" },
+  { type: "event", label: "Event" },
+  { type: "resource", label: "Resource" },
+  { type: "event", label: "Event" },
+  { type: "special", label: "Special" },
+  { type: "event", label: "Event" },
+  { type: "event", label: "Event" },
+  { type: "resource", label: "Resource" },
+  { type: "event", label: "Event" },
+  { type: "special", label: "Special" },
+  { type: "event", label: "Event" },
+  { type: "resource", label: "Resource" },
+  { type: "event", label: "Event" },
+  { type: "resource", label: "Resource" },
+  { type: "event", label: "Event" },
+  { type: "special", label: "Special" },
+  { type: "event", label: "Event" },
+  { type: "resource", label: "Resource" },
+  { type: "event", label: "Event" },
+  { type: "event", label: "Event" },
 ];
 
 export const tileTypeLabels: Record<TileType, string> = {
   start: "Start",
-  task: "Task",
   event: "Event",
   resource: "Resource",
   special: "Special",
@@ -66,7 +65,6 @@ export function buildBoardGrid(): (number | null)[][] {
 export const tileLegend: { type: TileType; name: string; colorClass: string }[] =
   [
     { type: "start", name: "Start", colorClass: "border-blue-500/60 text-blue-800" },
-    { type: "task", name: "Task", colorClass: "border-blue-500/60 text-blue-800" },
     {
       type: "event",
       name: "Event",
@@ -82,12 +80,11 @@ export const tileLegend: { type: TileType; name: string; colorClass: string }[] 
 
 export function tileStyle(type: TileType, isCurrent: boolean): string {
   if (isCurrent) {
-    return "border-stone-700 bg-stone-700 text-[#f7f3ed] shadow-[0_4px_14px_rgba(68,64,60,0.25)] ring-2 ring-stone-500/30 ring-offset-2 ring-offset-[#f7f3ed]";
+    return "border-stone-500/70 bg-[#faf7f2] ring-2 ring-stone-400/40 ring-offset-1 ring-offset-[#f7f3ed]";
   }
 
   switch (type) {
     case "start":
-    case "task":
       return "border-blue-400/70 bg-blue-50/80 text-blue-900";
     case "event":
       return "border-emerald-600/40 bg-emerald-50/90 text-emerald-900";

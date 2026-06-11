@@ -50,3 +50,18 @@ body {
 .animate-dice-shake {
   animation: dice-shake 0.35s ease-in-out infinite;
 }
+
+@keyframes bubble-pop {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(4px) scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+.animate-bubble-pop {
+  animation: bubble-pop 0.25s ease-out forwards;
+}

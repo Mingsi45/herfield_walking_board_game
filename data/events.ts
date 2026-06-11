@@ -1,808 +1,521 @@
 export type Effects = {
-    satisfaction?: number;
-    salary?: number;
-    health?: number;
-    energy?: number;
-  };
-  
-  export type Choice = {
-    text: string;
-    effects: Effects;
-  };
-  
-  export type GameEvent = {
-    id: number;
-    title: string;
-    description: string;
-    choices: Choice[];
-  };
-  
-  export const events: GameEvent[] = [
-    {
-      id: 1,
-      title: "Dress Code Controversy",
-      description:
-        "During an international beach handball tournament, you and your teammates are fined for refusing to wear bikini bottoms and instead choosing athletic shorts. The incident sparks global debate about the sexualization of female athletes.",
-      choices: [
-        {
-          text: "Pay the fine and publicly protest",
-          effects: {
-            salary: -20,
-            satisfaction: 10,
-            energy: -5,
-          },
-        },
-        {
-          text: "Refuse to pay and file an appeal",
-          effects: {
-            salary: -30,
-            satisfaction: 15,
-            energy: -20,
-          },
-        },
-        {
-          text: "Pay quietly and avoid attention",
-          effects: {
-            salary: -20,
-            satisfaction: -5,
-          },
-        },
-        {
-          text: "Organize a collective protest with other teams",
-          effects: {
-            salary: -30,
-            satisfaction: 20,
-            energy: -20,
-          },
-        },
-      ],
-    },
-  
-    {
-      id: 2,
-      title: "The Fall of a Prodigy",
-      description:
-        "You became an Olympic champion at 14 and were celebrated as a miracle athlete. As your body matures, critics begin attacking your appearance and performance, turning admiration into pressure and cruelty.",
-      choices: [
-        {
-          text: "Speak honestly about body changes",
-          effects: {
-            satisfaction: 5,
-            energy: -10,
-          },
-        },
-        {
-          text: "Leave social media and focus on training",
-          effects: {
-            satisfaction: -10,
-            energy: 10,
-            health: 5,
-          },
-        },
-        {
-          text: "Attempt dangerous rapid weight loss",
-          effects: {
-            health: -20,
-            satisfaction: -15,
-            energy: -10,
-          },
-        },
-        {
-          text: "Train harder to silence critics",
-          effects: {
-            energy: -15,
-            satisfaction: 20,
-          },
-        },
-      ],
-    },
-  
-    {
-      id: 3,
-      title: "The Salary Gap",
-      description:
-        "You play in a professional women's hockey league where even the highest salaries are only a fraction of those in men's leagues. Despite winning more championships and medals, female athletes continue to be underpaid.",
-      choices: [
-        {
-          text: "Publicly criticize unequal pay",
-          effects: {
-            satisfaction: 20,
-            energy: -15,
-          },
-        },
-        {
-          text: "Focus on sponsorships and endorsements",
-          effects: {
-            energy: -20,
-            salary: 20,
-          },
-        },
-        {
-          text: "Accept reality and survive quietly",
-          effects: {
-            satisfaction: -10,
-          },
-        },
-        {
-          text: "Help organize a players' union",
-          effects: {
-            satisfaction: 25,
-            energy: -25,
-          },
-        },
-      ],
-    },
-  
-    {
-      id: 4,
-      title: "Security Check Trauma",
-      description:
-        "Before a major tournament, you experience inappropriate physical contact during airport security screening. The experience leaves you shaken and affects your mental state before competition.",
-      choices: [
-        {
-          text: "Immediately report the incident",
-          effects: {
-            energy: -20,
-          },
-        },
-        {
-          text: "Stay silent and focus on the match",
-          effects: {
-            satisfaction: -25,
-            energy: -10,
-          },
-        },
-        {
-          text: "Expose the incident publicly afterward",
-          effects: {
-            satisfaction: 10,
-            energy: -5,
-          },
-        },
-        {
-          text: "Withdraw from the tournament",
-          effects: {
-            satisfaction: -20,
-            salary: -20,
-          },
-        },
-      ],
-    },
-  
-    {
-      id: 5,
-      title: "Pregnancy Trade",
-      description:
-        "After informing your basketball team that you are pregnant, management accuses you of lacking commitment and trades you before the season begins.",
-      choices: [
-        {
-          text: "Sue the team for discrimination",
-          effects: {
-            salary: -20,
-            satisfaction: 5,
-            energy: -20,
-          },
-        },
-        {
-          text: "Prove yourself through performance",
-          effects: {
-            energy: -15,
-            satisfaction: -20,
-          },
-        },
-        {
-          text: "Publicly share your experience",
-          effects: {
-            satisfaction: 15,
-            energy: -15,
-          },
-        },
-        {
-          text: "Negotiate compensation privately",
-          effects: {
-            salary: 20,
-            satisfaction: -10,
-            energy: -10,
-          },
-        },
-      ],
-    },
-  
-    {
-      id: 6,
-      title: "Postpartum Fitness Test",
-      description:
-        "After returning from childbirth leave, your team demands that you complete exhausting fitness tests before being allowed back into competition. Male athletes are never subjected to the same treatment.",
-      choices: [
-        {
-          text: "Complete the tests but criticize the policy",
-          effects: {
-            health: -10,
-            satisfaction: 10,
-            energy: -5,
-          },
-        },
-        {
-          text: "Refuse and demand equal treatment",
-          effects: {
-            satisfaction: 15,
-            energy: -15,
-          },
-        },
-        {
-          text: "Quietly complete every test",
-          effects: {
-            energy: -5,
-            satisfaction: -20,
-          },
-        },
-        {
-          text: "Organize mothers to protest together",
-          effects: {
-            energy: -25,
-            satisfaction: 25,
-          },
-        },
-      ],
-    },
-  
-    {
-      id: 7,
-      title: "War and Bikini Sponsorship",
-      description:
-        "While your country is suffering through war, a sponsor demands that female athletes wear bikinis for promotional photoshoots to increase visibility and profit.",
-      choices: [
-        {
-          text: "Refuse and expose the sponsor publicly",
-          effects: {
-            salary: -20,
-            satisfaction: 20,
-          },
-        },
-        {
-          text: "Accept for the survival of the team",
-          effects: {
-            salary: 20,
-            satisfaction: -30,
-          },
-        },
-        {
-          text: "Negotiate for more respectful uniforms",
-          effects: {
-            salary: 20,
-            energy: -30,
-          },
-        },
-        {
-          text: "Lead a team-wide boycott",
-          effects: {
-            salary: -20,
-            satisfaction: 25,
-          },
-        },
-      ],
-    },
-  
-    {
-      id: 8,
-      title: "Forbidden Ring",
-      description:
-        "In a traditional sport where women are forbidden from entering the sacred competition ring, even female medics are ordered to leave during an emergency rescue attempt.",
-      choices: [
-        {
-          text: "Ignore tradition and save the person",
-          effects: {
-            satisfaction: 30,
-          },
-        },
-        {
-          text: "Follow the rules and seek male assistance",
-          effects: {
-            satisfaction: -20,
-          },
-        },
-        {
-          text: "Publicly criticize the discriminatory rule",
-          effects: {
-            satisfaction: 15,
-            energy: -10,
-          },
-        },
-        {
-          text: "Organize a symbolic protest",
-          effects: {
-            satisfaction: 25,
-            energy: -20,
-          },
-        },
-      ],
-    },
+  satisfaction?: number;
+  salary?: number;
+  health?: number;
+  energy?: number;
+};
 
-    {
-      id: 9,
-    title: "Judged for Your Appearance",
+export type Choice = {
+  text: string;
+  effects: Effects;
+};
+
+export type GameEvent = {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  choices: Choice[];
+};
+
+export const events: GameEvent[] = [
+  {
+    id: 1,
+    title: "Dress Code Judgment",
     description:
-      "While imprisoned abroad, media coverage focuses less on your safety and more on your appearance, short hair, and whether you look 'feminine enough.' Public discussion becomes cruel and dehumanizing.",
+      "At the 2021 European Beach Handball Championship, you and your teammates were fined for refusing to wear the required bikini bottoms and instead competing in athletic shorts. The ruling sparked global debate about the sexualization of female athletes.",
+    image: "/events/1.png",
     choices: [
       {
-        text: "Stay true to yourself and refuse to apologize",
-        effects: {
-          satisfaction: 15,
-          energy: 10,
-        },
+        text: "Pay the fine and speak out publicly",
+        effects: { salary: -50, satisfaction: 10, energy: -5 },
       },
       {
-        text: "Change your appearance to gain sympathy",
-        effects: {
-          satisfaction: -30,
-          energy: -10,
-        },
+        text: "Refuse to pay and file an appeal",
+        effects: { salary: -10, satisfaction: 15, energy: -20 },
       },
       {
-        text: "Organize a hunger strike protest",
-        effects: {
-          health: -40,
-          satisfaction: 20,
-          energy: -20,
-        },
+        text: "Pay quietly and avoid attention",
+        effects: { salary: -50, satisfaction: -5 },
       },
       {
-        text: "Remain silent and wait for release",
-        effects: {
-          satisfaction: -10,
-          energy: -5,
-        },
+        text: "Organize a collective shorts protest with other teams",
+        effects: { salary: -70, satisfaction: 20, energy: -20 },
       },
     ],
   },
-
   {
-    id: 10,
-    title: "Forced Weight Loss",
+    id: 2,
+    title: "The Fall of a Prodigy",
     description:
-      "Only weeks after childbirth, your coach demands that you rapidly lose weight to qualify for competition again, despite the serious impact on your health and breastfeeding.",
+      "You became an Olympic champion at 14 and were celebrated as a miracle athlete. As your body matures, critics attack your appearance and performance, turning admiration into pressure and cruelty.",
+    image: "/events/2.png",
     choices: [
       {
-        text: "Stop breastfeeding and focus on weight loss",
-        effects: {
-          satisfaction: -35,
-          health: -15,
-          salary: 40,
-        },
+        text: "Speak honestly about body changes",
+        effects: { satisfaction: 5, energy: -10 },
       },
       {
-        text: "Fight to change the outdated rules",
-        effects: {
-          satisfaction: 30,
-          energy: -30,
-        },
+        text: "Leave social media and focus on training",
+        effects: { satisfaction: -10, energy: 10, health: 5 },
       },
       {
-        text: "Pause your career and prioritize your child",
-        effects: {
-          salary: -40,
-          satisfaction: 20,
-        },
+        text: "Attempt dangerous rapid weight loss",
+        effects: { health: -20, satisfaction: -15, energy: -10 },
+      },
+      {
+        text: "Train harder to silence critics",
+        effects: { energy: -15, satisfaction: 20 },
+      },
+    ],
+  },
+  {
+    id: 3,
+    title: "The Ice Rink Pay Gap",
+    description:
+      "You play in the Professional Women's Hockey League (PWHL), where top salaries are around $100,000—while the NHL minimum is nearly eight times higher. U.S. women have won more Olympic gold medals than men in six straight Games.",
+    image: "/events/3.png",
+    choices: [
+      {
+        text: "Publicly call out unfair league pay",
+        effects: { satisfaction: 20, energy: -15 },
+      },
+      {
+        text: "Chase titles and sponsorships to make up income",
+        effects: { energy: -20, salary: 20 },
+      },
+      {
+        text: "Accept the status quo and survive",
+        effects: { satisfaction: -10 },
+      },
+      {
+        text: "Organize a players' union for collective bargaining",
+        effects: { satisfaction: 25, energy: -25 },
+      },
+    ],
+  },
+  {
+    id: 4,
+    title: "Security Checkpoint Shadow",
+    description:
+      "Before a major world table tennis event, you were subjected to invasive contact during security screening as a Chinese Taipei athlete. The trauma affected your mental state and even team lineup decisions.",
+    image: "/events/4.png",
+    choices: [
+      {
+        text: "Confront staff on the spot and demand an investigation",
+        effects: { energy: -20 },
+      },
+      {
+        text: "Endure it and focus on the match",
+        effects: { satisfaction: -25, energy: -10 },
+      },
+      {
+        text: "Expose the incident publicly after the tournament",
+        effects: { satisfaction: 10, energy: -5 },
+      },
+      {
+        text: "Withdraw from the event and return home",
+        effects: { satisfaction: -20, salary: -30 },
+      },
+    ],
+  },
+  {
+    id: 5,
+    title: "Pregnancy as a Trade",
+    description:
+      "As a WNBA star forward, telling your team you were pregnant brought accusations of being \"not committed\"—and you were traded to another city before the season began.",
+    image: "/events/5.png",
+    choices: [
+      {
+        text: "File a federal discrimination lawsuit",
+        effects: { salary: -10, satisfaction: 5, energy: -20 },
+      },
+      {
+        text: "Prove your worth on a new team",
+        effects: { energy: -15, satisfaction: -20 },
+      },
+      {
+        text: "Go public to gain public support",
+        effects: { satisfaction: 15, energy: -15 },
+      },
+      {
+        text: "Negotiate partial contractual protections",
+        effects: { salary: 20, satisfaction: -10, energy: -10 },
+      },
+    ],
+  },
+  {
+    id: 6,
+    title: "No Protocol for Pregnancy",
+    description:
+      "In 2025, the U.S. women's national soccer team still lacked formal protections for pregnant players—training, match, and recovery rights were undefined, leaving athletes to navigate alone.",
+    image: "/events/6.png",
+    choices: [
+      {
+        text: "Publicly demand accelerated protective policies",
+        effects: { satisfaction: 25, energy: -15 },
+      },
+      {
+        text: "Negotiate private guarantees in your contract",
+        effects: { salary: 30, satisfaction: -5, energy: -10 },
+      },
+      {
+        text: "Hide the pregnancy and keep competing",
+        effects: { health: -20, satisfaction: -1 },
+      },
+      {
+        text: "Unite players to demand institutional safeguards",
+        effects: { satisfaction: 35, energy: -25, salary: -20 },
+      },
+    ],
+  },
+  {
+    id: 7,
+    title: "Uniform Choice on the Track",
+    description:
+      "Women's track traditionally defaults to high-cut briefs that many athletes find distracting and exposing. Some events now allow shorts—but that freedom is not universal.",
+    image: "/events/7.png",
+    choices: [
+      {
+        text: "Request permission to wear shorts",
+        effects: { satisfaction: 10, energy: -5 },
+      },
+      {
+        text: "Default to shorts without asking",
+        effects: { satisfaction: 5, energy: 10 },
+      },
+      {
+        text: "Petition the federation for clothing choice",
+        effects: { satisfaction: 30, energy: -25 },
+      },
+      {
+        text: "Ignore the debate and focus on performance",
+        effects: { satisfaction: -10, energy: 10 },
+      },
+    ],
+  },
+  {
+    id: 8,
+    title: "Taboo on the Dohyō",
+    description:
+      "Sumo is Japan's national sport, yet women cannot compete professionally—and even stepping on the sacred ring is taboo. When a woman collapsed at an event, female medics rushed in but were ordered off the dohyō.",
+    image: "/events/8.png",
+    choices: [
+      {
+        text: "Ignore the taboo and help save a life",
+        effects: { satisfaction: 30 },
+      },
+      {
+        text: "Stay off the ring and seek male help",
+        effects: { satisfaction: -20 },
+      },
+      {
+        text: "Protest the gender rule afterward",
+        effects: { satisfaction: 15, energy: -10 },
+      },
+      {
+        text: "Organize a symbolic women's dohyō action",
+        effects: { satisfaction: 25, energy: -20 },
+      },
+    ],
+  },
+  {
+    id: 9,
+    title: "The Gaze in Detention",
+    description:
+      "Detained in Russia as a WNBA star, media focused less on your release than on your short hair, height, and \"non-traditional\" femininity. Commentators said you \"don't look like a woman.\"",
+    image: "/events/9.png",
+    choices: [
+      {
+        text: "Keep your style and refuse to apologize",
+        effects: { satisfaction: 15, energy: 10 },
+      },
+      {
+        text: "Change your look to win sympathy",
+        effects: { satisfaction: -30, energy: -10 },
+      },
+      {
+        text: "Launch a hunger strike with fellow detainees",
+        effects: { health: -40, satisfaction: 20, energy: -20 },
+      },
+      {
+        text: "Stay silent and wait for a prisoner swap",
+        effects: { energy: -5, satisfaction: -10 },
+      },
+    ],
+  },
+  {
+    id: 10,
+    title: "Weight Loss Ultimatum While Nursing",
+    description:
+      "As a British jockey, one week after giving birth you received an ultimatum: return to race weight within six weeks or lose your license—forcing intense training and diet while breastfeeding.",
+    image: "/events/10.png",
+    choices: [
+      {
+        text: "Stop breastfeeding to meet the deadline",
+        effects: { satisfaction: -35, health: -15, salary: 40 },
+      },
+      {
+        text: "Unite jockeys to change the rules",
+        effects: { energy: -30, satisfaction: 30 },
+      },
+      {
+        text: "Pause your career for your child",
+        effects: { salary: -20, satisfaction: 20 },
       },
       {
         text: "Work with a nutritionist to balance both",
-        effects: {
-          salary: -20,
-          energy: -20,
-          health: -5,
-          satisfaction: 25,
-        },
+        effects: { salary: -20, energy: -20, health: -5, satisfaction: 25 },
       },
     ],
   },
-
   {
     id: 11,
-    title: "Too Violent for a Woman",
+    title: "The \"Gift Bag\" Champion",
     description:
-      "After retiring from military boxing, you attempt to open a combat fitness gym. A landlord refuses to rent you space, claiming martial arts are 'too aggressive for women.'",
+      "You won first place at an international event, but your \"prize\" was a cheap kit of toiletries while the men's champion took thousands in cash. Officials said women's events draw less revenue.",
+    image: "/events/11.png",
     choices: [
       {
-        text: "Sue for gender discrimination",
-        effects: {
-          satisfaction: 20,
-          energy: -15,
-        },
+        text: "Publicly demand equal prize money",
+        effects: { satisfaction: 25, energy: -15 },
       },
       {
-        text: "Use a male business partner as the public face",
-        effects: {
-          satisfaction: -25,
-          salary: 20,
-          energy: -5,
-        },
+        text: "Refuse the prize on the spot",
+        effects: { satisfaction: 15 },
       },
       {
-        text: "Expose the discrimination publicly",
-        effects: {
-          satisfaction: 30,
-          energy: -15,
-        },
+        text: "Accept quietly and focus on the next event",
+        effects: { satisfaction: -15, energy: 5 },
       },
       {
-        text: "Abandon the gym idea and become a trainer",
-        effects: {
-          salary: 5,
-          satisfaction: -20,
-          energy: -5,
-        },
+        text: "Boycott the next event with other women",
+        effects: { satisfaction: 20, salary: -20, energy: -20 },
       },
     ],
   },
-
   {
     id: 12,
-    title: "A Bicycle as Compensation",
+    title: "Race Application Denied",
     description:
-      "After being hit by a motorcycle during a cycling competition and suffering serious injuries, organizers offer you a replacement bicycle as compensation instead of meaningful medical support.",
+      "Your team applied to host a top women's road race matching men's format, prize, and broadcast—and the international cycling union rejected it as \"not in the best interest of women's cycling\" while approving a similar men's race.",
+    image: "/events/12.png",
     choices: [
       {
-        text: "Reject the compensation and criticize safety failures",
-        effects: {
-          satisfaction: 25,
-          energy: -20,
-        },
+        text: "Publicly challenge double standards",
+        effects: { satisfaction: 25, energy: -15 },
       },
       {
-        text: "Accept the bicycle but demand healthcare reforms",
-        effects: {
-          health: 10,
-          satisfaction: 10,
-        },
+        text: "File a joint discrimination complaint",
+        effects: { satisfaction: 20, salary: -10, energy: -20 },
       },
       {
-        text: "Accept quietly to avoid conflict",
-        effects: {
-          satisfaction: -15,
-        },
+        text: "Accept the decision and fight for existing events",
+        effects: { satisfaction: -10, energy: 5 },
       },
       {
-        text: "Auction the bicycle for charity as protest art",
-        effects: {
-          satisfaction: 35,
-          energy: -5,
-        },
+        text: "Run a protest race on the same course",
+        effects: { satisfaction: 30, salary: -30, energy: -25 },
       },
     ],
   },
-
   {
     id: 13,
-    title: "Called a 'Man'",
+    title: "\"Too Masculine\"",
     description:
-      "As a world-class volleyball player with a tall and muscular build, you constantly receive hateful comments claiming you look 'too masculine' to be a woman.",
+      "As a top volleyball blocker at 1.93m, social media fills with comments like \"she looks like a man.\" The insults sometimes make you doubt your own femininity.",
+    image: "/events/13.png",
     choices: [
       {
-        text: "Channel the anger into your performance",
-        effects: {
-          energy: -5,
-          satisfaction: 10,
-        },
+        text: "Channel anger into powerful spikes",
+        effects: { energy: -5, satisfaction: 10 },
       },
       {
-        text: "Post glamorous photos to challenge stereotypes",
-        effects: {
-          satisfaction: 15,
-          energy: -5,
-        },
+        text: "Share photos of your off-court femininity",
+        effects: { satisfaction: 15, energy: -5 },
       },
       {
-        text: "Launch an anti-body-shaming campaign",
-        effects: {
-          satisfaction: 30,
-          energy: -20,
-        },
+        text: "Launch an anti body-shaming campaign",
+        effects: { satisfaction: 30, energy: -20 },
       },
       {
         text: "Leave social media for your mental health",
-        effects: {
-          satisfaction: 5,
-          energy: 10,
-        },
+        effects: { satisfaction: 5, energy: 10 },
       },
     ],
   },
-
   {
     id: 14,
-    title: "Back to the Kitchen",
+    title: "\"Back to the Kitchen\"",
     description:
-      "After winning a world championship, a radio commentator jokes that your team can now 'go back to the kitchen.' The comment spreads globally.",
+      "After two World Cup losses, your team faces a flood of misogynistic posts—not about tactics, but telling you to \"go cook.\" People who never watch women's cricket suddenly claim funding is wasted.",
+    image: "/events/14.png",
     choices: [
       {
-        text: "Demand a public apology",
-        effects: {
-          satisfaction: 20,
-          energy: -10,
-        },
+        text: "Post a team dinner photo: \"Full stomachs, stronger wins\"",
+        effects: { satisfaction: 15, energy: 10 },
       },
       {
-        text: "Respond with humor and satire",
-        effects: {
-          satisfaction: 35,
-          energy: -10,
-        },
+        text: "Decline interviews; answer with the next victory",
+        effects: { satisfaction: -10, energy: 15 },
       },
       {
-        text: "Celebrate publicly with your teammates",
-        effects: {
-          satisfaction: 15,
-          energy: 10,
-        },
+        text: "Write about harm to young female players",
+        effects: { satisfaction: 20, energy: -15 },
       },
       {
-        text: "Ignore the comment and focus on future victories",
-        effects: {
-          satisfaction: 5,
-          energy: 5,
-        },
+        text: "Unite women athletes against online abuse",
+        effects: { satisfaction: 25, energy: -20 },
       },
     ],
   },
-
   {
     id: 15,
-    title: "Punished for Crying",
+    title: "Body Shaming Online",
     description:
-      "After losing a championship due to a controversial call, you cry on the field and receive a disciplinary penalty for 'unsportsmanlike conduct.' Male athletes showing anger are praised as passionate.",
+      "After a disappointing international result, you thanked fans online—and comments attacked your body, not your performance: \"too fat,\" \"not athlete material,\" \"go lose weight.\"",
+    image: "/events/15.png",
     choices: [
       {
-        text: "Appeal the discriminatory rule",
-        effects: {
-          salary: -20,
-          satisfaction: 25,
-          energy: -15,
-        },
+        text: "Speak out about the harm of body shaming",
+        effects: { satisfaction: 20, energy: -10 },
       },
       {
-        text: "Refuse to sign the penalty notice",
-        effects: {
-          satisfaction: 10,
-          energy: -15,
-        },
+        text: "Turn off comments and engage real fans only",
+        effects: { satisfaction: 10, energy: 5 },
       },
       {
-        text: "Win your next competition and speak out afterward",
-        effects: {
-          satisfaction: 20,
-        },
+        text: "Let your next win be the reply",
+        effects: { energy: 15, satisfaction: 5 },
       },
       {
-        text: "Accept the punishment and suppress emotions",
-        effects: {
-          satisfaction: -25,
-        },
+        text: "Launch an anti-cyberbullying movement",
+        effects: { satisfaction: 25, energy: -20 },
       },
     ],
   },
-
   {
     id: 16,
-    title: "Judged by Your Bikini",
+    title: "The \"Sexy\" Surf Ad",
     description:
-      "After a strong surfing performance, judges reduce your score partly because your swimsuit shifted during a fall, claiming it affected the event's image.",
+      "A major surf brand's new women's campaign features bikini models and the tagline \"when surf culture meets sex appeal.\" A pro surfer asks: \"Why go back to being valued for bodies, not skill?\"",
+    image: "/events/16.png",
     choices: [
       {
-        text: "Wear a full-body suit in protest",
-        effects: {
-          satisfaction: 30,
-          energy: -10,
-        },
+        text: "Support the critic publicly",
+        effects: { satisfaction: 25, salary: -10 },
       },
       {
-        text: "Publicly challenge the judges",
-        effects: {
-          satisfaction: 20,
-          energy: -10,
-        },
+        text: "Stay neutral and focus on results",
+        effects: { satisfaction: -10, energy: 10 },
       },
       {
-        text: "Demand scoring reform with other athletes",
-        effects: {
-          satisfaction: 25,
-          energy: -15,
-        },
+        text: "Contact the brand privately",
+        effects: { satisfaction: -5 },
       },
       {
-        text: "Comply with expectations to improve scores",
-        effects: {
-          satisfaction: -20,
-          salary: 20,
-        },
+        text: "Lead a #SurfAppeal campaign for skill-based ads",
+        effects: { satisfaction: 30, energy: -25 },
       },
     ],
   },
-
   {
     id: 17,
-    title: "Humiliating Gender Verification",
+    title: "Virginity Testing",
     description:
-      "After breaking a national record, officials force you through invasive 'gender verification' procedures that leave you traumatized and humiliated.",
+      "After breaking a national record, your federation required invasive \"gender verification\" including virginity testing. The humiliation outweighed any defeat.",
+    image: "/events/17.png",
     choices: [
       {
-        text: "Publicly expose the abuse",
-        effects: {
-          satisfaction: 30,
-          energy: -20,
-        },
+        text: "Go public and demand abolition of invasive tests",
+        effects: { satisfaction: 30, energy: -20 },
       },
       {
-        text: "Silently endure and focus on training",
-        effects: {
-          energy: 15,
-          health: 5,
-          satisfaction: -20,
-        },
+        text: "Endure it and train harder",
+        effects: { energy: 15, health: 5, satisfaction: -20 },
       },
       {
-        text: "Refuse the procedure and lose the record",
-        effects: {
-          satisfaction: -10,
-          salary: -30,
-        },
+        text: "Reject the test and forfeit the record",
+        effects: { satisfaction: -10, salary: -20 },
       },
       {
-        text: "Sue the federation and officials",
-        effects: {
-          salary: -40,
-          satisfaction: 30,
-        },
+        text: "Sue the federation for harm",
+        effects: { salary: -30, satisfaction: 30 },
       },
     ],
   },
-
   {
     id: 18,
-    title: "The Smile Contract",
+    title: "Ranked High, Still Unsponsored",
     description:
-      "A sponsor contract requires you to keep long hair, wear makeup, avoid laughing loudly, and maintain an 'elegant feminine image.'",
+      "You're world No. 11 in tennis with a Grand Slam final—but no apparel or racket sponsor. Lower-ranked peers have multiple deals. You said: \"Maybe I'm not blonde, thin, or tall enough.\"",
+    image: "/events/18.png",
     choices: [
       {
-        text: "Reject the contract completely",
-        effects: {
-          salary: -30,
-          satisfaction: 25,
-        },
+        text: "Call out brands for appearance bias",
+        effects: { satisfaction: 25, energy: -15 },
       },
       {
-        text: "Sign it but secretly break the rules",
-        effects: {
-          salary: -40,
-          satisfaction: 5,
-        },
+        text: "Accept reality and climb the rankings",
+        effects: { energy: 10, satisfaction: -10 },
       },
       {
-        text: "Negotiate to remove the sexist clauses",
-        effects: {
-          satisfaction: 15,
-          energy: -20,
-        },
+        text: "Hire an image consultant",
+        effects: { salary: -20, satisfaction: 5, energy: -10 },
       },
       {
-        text: "Expose the contract publicly",
-        effects: {
-          salary: -30,
-          satisfaction: 35,
-        },
+        text: "Unite unsponsored top players to speak out",
+        effects: { satisfaction: 20, energy: -20 },
       },
     ],
   },
-
   {
     id: 19,
-    title: "The 'Feminist Athlete' Label",
+    title: "The Cost of Being Public",
     description:
-      "After speaking publicly about gender equality, brands begin avoiding you because they fear controversy around your outspoken activism.",
+      "After a loss you posted that you'd keep going while \"the fire still burns.\" Trolls twisted your words into death threats. Teammates say attacks target bodies and gender, not sport.",
+    image: "/events/19.png",
     choices: [
       {
-        text: "Embrace activism even more openly",
-        effects: {
-          satisfaction: 20,
-          salary: -20,
-        },
+        text: "Expose the worst messages publicly",
+        effects: { satisfaction: 20, energy: -15 },
       },
       {
-        text: "Distance yourself from the label",
-        effects: {
-          satisfaction: -10,
-          salary: 10,
-        },
+        text: "Reduce social media exposure",
+        effects: { energy: 10, satisfaction: -10 },
       },
       {
-        text: "Focus entirely on performance",
-        effects: {
-          energy: 10,
-          salary: 5,
-        },
+        text: "Give an interview on psychological harm",
+        effects: { satisfaction: 15, energy: -20 },
       },
       {
-        text: "Create a foundation for young girls in sports",
-        effects: {
-          salary: -20,
-          satisfaction: 30,
-        },
+        text: "Ask the federation for online protection",
+        effects: { satisfaction: 25, energy: -20 },
       },
     ],
   },
-
   {
     id: 20,
-    title: "The Motherhood Dilemma",
+    title: "A Mother's Dilemma",
     description:
-      "At the peak of your career, balancing elite competition and motherhood becomes emotionally exhausting. Society expects you to be both a perfect athlete and a perfect mother.",
+      "You're in your career prime and a mother. Training and travel leave little time with your child. Society demands you be a \"good mom\" and a \"top athlete\" at once.",
+    image: "/events/20.png",
     choices: [
       {
-        text: "Demand family support accommodations from your team",
-        effects: {
-          energy: -20,
-          satisfaction: 15,
-        },
+        text: "Request childcare and nursing facilities at events",
+        effects: { energy: -20, satisfaction: 15 },
       },
       {
-        text: "Prioritize training and leave childcare to family",
-        effects: {
-          satisfaction: -30,
-          health: 10,
-          salary: 20,
-        },
+        text: "Leave parenting to family and focus on training",
+        effects: { satisfaction: -30, health: 10, salary: 20 },
       },
       {
-        text: "Speak publicly about the pressure of athlete motherhood",
-        effects: {
-          satisfaction: 25,
-          energy: -10,
-        },
+        text: "Speak publicly about dual pressure",
+        effects: { satisfaction: 25, energy: -10 },
       },
       {
-        text: "Temporarily retire to focus on family",
-        effects: {
-          salary: -30,
-          satisfaction: 30,
-        },
-      },
-    ],
-  },
-
-  {
-    id: 21,
-    title: "Burnout",
-    description:
-      "Years of pressure, public criticism, injuries, and emotional exhaustion begin catching up to you. You wonder whether continuing your career is still worth the cost.",
-    choices: [
-      {
-        text: "Take a long mental health break",
-        effects: {
-          energy: 25,
-          satisfaction: 10,
-          salary: -20,
-        },
-      },
-      {
-        text: "Push through and continue competing",
-        effects: {
-          salary: 20,
-          health: -20,
-          energy: -20,
-        },
-      },
-      {
-        text: "Retire early and reclaim your personal life",
-        effects: {
-          satisfaction: 30,
-          salary: -30,
-        },
-      },
-      {
-        text: "Transform your pain into activism",
-        effects: {
-          satisfaction: 25,
-          energy: -10,
-        },
+        text: "Consider pausing your career for family",
+        effects: { salary: -40, satisfaction: 30 },
       },
     ],
   },
@@ -818,72 +531,73 @@ export const resources: Resource[] = [
   {
     title: "Letters From Fans",
     description:
-      "Young fans send you handwritten letters about how much you inspire them.",
-    effects: {
-      satisfaction: 15,
-    },
+      "Handwritten fan letters praise your courage on court—one says you are who her daughter wants to become. You pin them in your locker.",
+    effects: { satisfaction: 15 },
   },
   {
-    title: "A Child's Hug",
+    title: "A Young Fan's Hug",
     description:
-      "After training, a little girl runs over and says she wants to become an athlete like you.",
-    effects: {
-      satisfaction: 15,
-    },
+      "After training, a little girl hugs your leg and says she wants to be like you someday. You sleep soundly that night.",
+    effects: { satisfaction: 15 },
   },
   {
-    title: "Home-Cooked Meal",
+    title: "Mom's Home Cooking",
     description:
-      "Your mother brings your favorite homemade food after a difficult match.",
-    effects: {
-      satisfaction: 10,
-      energy: 15,
-      health: 5,
-    },
+      "Your mother brings braised ribs and tomato eggs in a thermos—you eat three bowls and feel ready to run.",
+    effects: { satisfaction: 10, energy: 15, health: 5 },
   },
   {
-    title: "Unexpected Break",
+    title: "Match Postponed",
     description:
-      "A competition is postponed, giving you rare time to rest and recover.",
-    effects: {
-      energy: 20,
-      satisfaction: 10,
-    },
+      "A key match is delayed a week because of weather. Relief hits first—you realize how exhausted you are.",
+    effects: { energy: 20, satisfaction: 10 },
   },
   {
-    title: "Winning Bonus",
+    title: "Training Through Your Period",
     description:
-      "You unexpectedly win an important competition and receive a bonus payment.",
-    effects: {
-      salary: 30,
-      satisfaction: 20,
-      energy: -5,
-    },
+      "On day two of your cycle, coaches schedule brutal conditioning. You push through on painkillers and slump against the wall afterward—no one checks on you.",
+    effects: { energy: -10, health: -10, satisfaction: -10 },
   },
   {
-    title: "Healthy Checkup",
+    title: "Key Win and Prize Money",
     description:
-      "Your annual medical report shows excellent physical condition.",
-    effects: {
-      health: 15,
-      satisfaction: 10,
-    },
+      "You upset a favored opponent and the bonus lands—enough to replace your parents' old refrigerator at home.",
+    effects: { salary: 30, satisfaction: 20, energy: -5 },
+  },
+  {
+    title: "Clean Bill of Health",
+    description:
+      "Annual labs show iron, bone density, and hormones all in excellent athletic range. Your body is working with you.",
+    effects: { health: 15, satisfaction: 10 },
+  },
+  {
+    title: "Underfunded Medical Care",
+    description:
+      "With only a part-time team doctor, a knee sprain was dismissed. Months later, an MRI shows meniscus damage—past the best treatment window.",
+    effects: { health: -25, salary: -20, satisfaction: -15 },
   },
 ];
-export const specialTiles = [
-    {
-      title: "Suspension",
-      description:
-        "You are suspended for two turns after being accused of dangerous play.",
-      effect: "skip_turns",
-      turns: 2,
-    },
-  
-    {
-      title: "Injury Recovery",
-      description:
-        "A surgery forces you to rest and recover for two turns.",
-      effect: "skip_turns",
-      turns: 2,
-    },
-  ];
+
+export type SpecialTile = {
+  title: string;
+  description: string;
+  effect: "skip_turns";
+  turns: number;
+};
+
+export const specialTiles: SpecialTile[] = [
+  {
+    title: "Suspension",
+    description:
+      "Ruled dangerous play, you are suspended for two turns. Appeals take time—you watch from the stands as tiles pass without triggering events.",
+    effect: "skip_turns",
+    turns: 2,
+  },
+  {
+    title: "Injury Recovery",
+    description:
+      "After minor surgery you must rest. You scroll teammates' training videos while physiotherapy visits fill the days.",
+    effect: "skip_turns",
+    turns: 2,
+  },
+];
