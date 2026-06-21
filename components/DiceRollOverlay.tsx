@@ -1,5 +1,7 @@
 "use client";
 
+import { useLanguage } from "../lib/i18n/LanguageProvider";
+
 type DiceRollOverlayProps = {
   phase: "rolling" | "result";
   displayValue: number;
@@ -9,6 +11,8 @@ export default function DiceRollOverlay({
   phase,
   displayValue,
 }: DiceRollOverlayProps) {
+  const { ui } = useLanguage();
+
   return (
     <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
       <div
@@ -17,7 +21,7 @@ export default function DiceRollOverlay({
         }`}
       >
         <span className="text-[8px] uppercase tracking-widest text-stone-500 sm:text-[9px]">
-          {phase === "rolling" ? "Rolling…" : "Rolled"}
+          {phase === "rolling" ? ui.dice.rolling : ui.dice.rolled}
         </span>
         <span className="font-serif text-3xl font-bold tabular-nums text-stone-800 sm:text-4xl">
           {displayValue}

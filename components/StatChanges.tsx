@@ -1,5 +1,9 @@
+"use client";
+
 import type { Effects } from "../data/events";
 import { getEffectEntries, type PlayerStats } from "../lib/gameStats";
+import { getStatLabels } from "../lib/i18n";
+import { useLanguage } from "../lib/i18n/LanguageProvider";
 
 type StatChangesProps = {
   effects: Effects;
@@ -7,12 +11,10 @@ type StatChangesProps = {
   title?: string;
 };
 
-export default function StatChanges({
-  effects,
-  before,
-  title = "Stat changes",
-}: StatChangesProps) {
-  const entries = getEffectEntries(effects);
+export default function StatChanges({ effects, before, title }: StatChangesProps) {
+  const { locale, ui } = useLanguage();
+  const labels = getStatLabels(locale);
+  const entries = getEffectEntries(effects, labels);
   const after = {
     satisfaction: before.satisfaction + (effects.satisfaction ?? 0),
     salary: before.salary + (effects.salary ?? 0),
@@ -22,14 +24,14 @@ export default function StatChanges({
 
   if (entries.length === 0) {
     return (
-      <p className="text-sm text-stone-500">No stat changes from this choice.</p>
+      <p className="text-sm text-stone-500">{ui.statChanges.empty}</p>
     );
   }
 
   return (
     <div className="rounded-xl border border-stone-300/60 bg-[#faf7f2] p-4">
       <p className="mb-3 text-xs font-medium uppercase tracking-wide text-stone-500">
-        {title}
+        {title ?? ui.statChanges.title}
       </p>
       <ul className="space-y-2">
         {entries.map(({ key, label, delta }) => (
@@ -56,4 +58,3 @@ export default function StatChanges({
     </div>
   );
 }
-

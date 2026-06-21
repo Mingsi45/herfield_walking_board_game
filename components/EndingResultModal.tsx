@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import type { Ending } from "../data/endings";
+import { useLanguage } from "../lib/i18n/LanguageProvider";
 
 type EndingResultModalProps = {
   ending: Ending;
@@ -14,6 +15,8 @@ export default function EndingResultModal({
   isOpen,
   onClose,
 }: EndingResultModalProps) {
+  const { ui } = useLanguage();
+
   if (!isOpen) return null;
 
   async function handleSaveImage() {
@@ -37,7 +40,7 @@ export default function EndingResultModal({
       <div className="absolute inset-0 bg-stone-800/35 backdrop-blur-[2px]" />
       <div className="relative max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-stone-300/50 bg-[#f7f3ed] p-5 shadow-xl sm:p-6">
         <p className="text-center text-xs font-semibold uppercase tracking-widest text-stone-500">
-          Your Results
+          {ui.ending.yourResults}
         </p>
         <h2 className="mt-2 text-center font-serif text-2xl font-bold text-stone-800 sm:text-3xl">
           {ending.title}
@@ -71,11 +74,13 @@ export default function EndingResultModal({
 
         <div className="mt-4 space-y-3 text-sm leading-relaxed text-stone-600">
           <p>
-            <span className="font-semibold text-stone-800">Athlete example: </span>
+            <span className="font-semibold text-stone-800">
+              {ui.ending.athleteExample}
+            </span>
             {ending.athleteExample}
           </p>
           <p>
-            <span className="font-semibold text-stone-800">Why: </span>
+            <span className="font-semibold text-stone-800">{ui.ending.why}</span>
             {ending.athleteWhy}
           </p>
         </div>
@@ -86,14 +91,14 @@ export default function EndingResultModal({
             onClick={handleSaveImage}
             className="flex-1 rounded-xl border border-stone-400/70 bg-stone-700 px-4 py-3 text-sm font-medium text-[#f7f3ed] hover:bg-stone-800"
           >
-            Save
+            {ui.ending.save}
           </button>
           <button
             type="button"
             onClick={onClose}
             className="flex-1 rounded-xl border border-stone-300/60 bg-[#efe9df] px-4 py-3 text-sm font-medium text-stone-800 hover:bg-[#e8e0d4]"
           >
-            Back to menu
+            {ui.ending.backToMenu}
           </button>
         </div>
       </div>

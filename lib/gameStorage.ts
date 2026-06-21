@@ -1,4 +1,4 @@
-import { STORAGE_KEY } from "./constants";
+import { MAX_TURNS, STORAGE_KEY } from "./constants";
 import type { PlayerStats } from "./gameStats";
 import { INITIAL_STATS } from "./gameStats";
 
@@ -33,6 +33,11 @@ export function loadGameState(): SavedGameState | null {
 export function clearGameState() {
   if (typeof window === "undefined") return;
   localStorage.removeItem(STORAGE_KEY);
+}
+
+export function hasResumableGame(): boolean {
+  const saved = loadGameState();
+  return saved !== null && saved.turnCount < MAX_TURNS;
 }
 
 export function createNewGameState(): SavedGameState {

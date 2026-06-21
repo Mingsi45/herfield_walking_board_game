@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { Effects } from "../data/events";
 import { applyEffects, type PlayerStats } from "../lib/gameStats";
+import { useLanguage } from "../lib/i18n/LanguageProvider";
 import StatChanges from "./StatChanges";
 
 type NoticeModalProps = {
@@ -24,6 +25,7 @@ export default function NoticeModal({
   onClose,
   onConfirm,
 }: NoticeModalProps) {
+  const { ui } = useLanguage();
   const [phase, setPhase] = useState<"preview" | "result">("preview");
 
   useEffect(() => {
@@ -60,7 +62,7 @@ export default function NoticeModal({
       <button
         type="button"
         className="absolute inset-0 bg-stone-800/25 backdrop-blur-[2px]"
-        aria-label="Close"
+        aria-label={ui.noticeModal.close}
         onClick={phase === "preview" ? onClose : undefined}
         disabled={phase === "result"}
       />
@@ -84,7 +86,9 @@ export default function NoticeModal({
           onClick={handleContinue}
           className="mt-6 w-full rounded-xl border border-stone-300/60 bg-[#efe9df] px-4 py-3 text-sm font-medium text-stone-800 transition-colors hover:bg-[#e8e0d4]"
         >
-          {phase === "preview" && hasEffects ? "See changes" : "Continue"}
+          {phase === "preview" && hasEffects
+            ? ui.noticeModal.seeChanges
+            : ui.noticeModal.continue}
         </button>
       </div>
     </div>

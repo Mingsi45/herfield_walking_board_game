@@ -2,23 +2,31 @@ import type { Effects } from "../data/events";
 
 export type PlayerStats = {
   satisfaction: number;
+  energy: number;
   salary: number;
   health: number;
-  energy: number;
 };
+
+/** Display order matches rules: Satisfaction → Energy → Salary → Health */
+export const STAT_KEYS: (keyof PlayerStats)[] = [
+  "satisfaction",
+  "energy",
+  "salary",
+  "health",
+];
 
 export const INITIAL_STATS: PlayerStats = {
   satisfaction: 100,
+  energy: 100,
   salary: 100,
   health: 100,
-  energy: 100,
 };
 
 export const STAT_LABELS: Record<keyof PlayerStats, string> = {
   satisfaction: "Satisfaction",
+  energy: "Energy",
   salary: "Salary",
   health: "Health",
-  energy: "Energy",
 };
 
 export function applyEffects(
@@ -33,11 +41,14 @@ export function applyEffects(
   };
 }
 
-export function getEffectEntries(effects: Effects) {
-  return (Object.keys(STAT_LABELS) as (keyof PlayerStats)[])
+export function getEffectEntries(
+  effects: Effects,
+  labels: Record<keyof PlayerStats, string> = STAT_LABELS,
+) {
+  return STAT_KEYS
     .map((key) => ({
       key,
-      label: STAT_LABELS[key],
+      label: labels[key],
       delta: effects[key] ?? 0,
     }))
     .filter((entry) => entry.delta !== 0);

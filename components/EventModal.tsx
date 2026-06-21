@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import type { Choice, GameEvent } from "../data/events";
 import { applyEffects, type PlayerStats } from "../lib/gameStats";
+import { useLanguage } from "../lib/i18n/LanguageProvider";
 import StatChanges from "./StatChanges";
 
 type EventModalProps = {
@@ -21,6 +22,7 @@ export default function EventModal({
   onClose,
   onComplete,
 }: EventModalProps) {
+  const { ui } = useLanguage();
   const [phase, setPhase] = useState<"choose" | "result" | "reality">("choose");
   const [selectedChoice, setSelectedChoice] = useState<Choice | null>(null);
 
@@ -59,7 +61,7 @@ export default function EventModal({
       <button
         type="button"
         className="absolute inset-0 bg-stone-800/25 backdrop-blur-[2px]"
-        aria-label="Close"
+        aria-label={ui.eventModal.close}
         onClick={phase === "choose" ? onClose : undefined}
         disabled={phase !== "choose"}
       />
@@ -76,7 +78,7 @@ export default function EventModal({
             type="button"
             onClick={onClose}
             className="absolute right-4 top-4 text-stone-500 transition-colors hover:text-stone-800"
-            aria-label="Close"
+            aria-label={ui.eventModal.close}
           >
             <span className="text-xl leading-none">&times;</span>
           </button>
@@ -114,7 +116,7 @@ export default function EventModal({
               selectedChoice && (
                 <>
                   <p className="mt-3 text-sm text-stone-600">
-                    You chose:{" "}
+                    {ui.eventModal.youChose}{" "}
                     <span className="font-medium">{selectedChoice.text}</span>
                   </p>
 
@@ -130,7 +132,7 @@ export default function EventModal({
                     onClick={handleViewReality}
                     className="mt-6 w-full rounded-xl border border-stone-400/70 bg-stone-700 px-4 py-3 text-sm font-medium text-[#f7f3ed] transition-colors hover:bg-stone-800"
                   >
-                    View Reality
+                    {ui.eventModal.viewReality}
                   </button>
                 </>
               )
@@ -144,7 +146,7 @@ export default function EventModal({
               {event.title}
             </h2>
             <p className="mt-1 text-center text-xs text-stone-500 sm:text-sm">
-              View Reality
+              {ui.eventModal.viewReality}
             </p>
 
             <div className="relative mx-auto mt-3 w-full p-2 sm:mt-4 sm:p-4">
@@ -159,7 +161,7 @@ export default function EventModal({
               <div className="relative flex min-h-[50vh] items-center justify-center overflow-hidden rounded-lg border-2 border-stone-500/80 bg-stone-100 sm:min-h-[58vh]">
                 <Image
                   src={event.image}
-                  alt={`Reality: ${event.title}`}
+                  alt={ui.eventModal.realityAlt(event.title)}
                   width={1200}
                   height={900}
                   className="max-h-[min(58vh,720px)] w-full object-contain"
@@ -174,7 +176,7 @@ export default function EventModal({
               onClick={handleConfirmResult}
               className="mt-4 w-full rounded-xl border border-stone-300/60 bg-[#efe9df] px-4 py-3 text-sm font-medium text-stone-800 transition-colors hover:bg-[#e8e0d4] sm:mt-5"
             >
-              Continue
+              {ui.eventModal.continue}
             </button>
           </>
         )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import DiceRollOverlay from "../components/DiceRollOverlay";
 import EndingResultModal from "../components/EndingResultModal";
 import EventModal from "../components/EventModal";
@@ -19,7 +19,6 @@ import {
   buildBoardGrid,
   tileLegend,
   tileStyle,
-  tileTypeLabels,
 } from "../data/board";
 import type { Ending } from "../data/endings";
 import {
@@ -30,18 +29,29 @@ import {
   type Effects,
   type GameEvent,
 } from "../data/events";
-import { SPEECH_LINES } from "../data/speechLines";
+import {
+  getSpeechLines,
+  getStatLabels,
+  getTileLabel,
+  localizeEnding,
+  localizeEvent,
+  localizeResource,
+  localizeSpecialTile,
+} from "../lib/i18n";
+import { useLanguage } from "../lib/i18n/LanguageProvider";
 import { MAX_TURNS } from "../lib/constants";
 import {
   clearGameState,
   createNewGameState,
+  hasResumableGame,
+  loadGameState,
   saveGameState,
 } from "../lib/gameStorage";
 import { resolveEnding } from "../lib/resolveEnding";
 import {
   INITIAL_STATS,
   randomItem,
-  STAT_LABELS,
+  STAT_KEYS,
   type PlayerStats,
 } from "../lib/gameStats";
 import { TileIcon } from "../components/cute/CuteArt";
@@ -60,10 +70,25 @@ const STEP_DELAY_MS = 350;
 const LAND_PAUSE_MS = 1000;
 const SPEECH_DURATION_MS = 4000;
 
+function getSavedGameSnapshot() {
+  return hasResumableGame();
+}
+
+function subscribeToSavedGame() {
+  return () => {};
+}
+
 export default function Home() {
+  const { locale, ui } = useLanguage();
+  const statLabels = getStatLabels(locale);
   const boardGrid = useMemo(() => buildBoardGrid(), []);
   const [screen, setScreen] = useState<Screen>("start");
   const [showRules, setShowRules] = useState(false);
+  const hasSavedGame = useSyncExternalStore(
+    subscribeToSavedGame,
+    getSavedGameSnapshot,
+    () => false,
+  );
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [endPhase, setEndPhase] = useState<EndPhase>(null);
   const [ending, setEnding] = useState<Ending | null>(null);
@@ -100,7 +125,7 @@ export default function Home() {
 
   function showSpeechBubble() {
     clearSpeechTimeout();
-    setSpeechText(randomItem(SPEECH_LINES));
+    setSpeechText(randomItem(getSpeechLines(locale)));
     speechTimeoutRef.current = setTimeout(() => {
       setSpeechText(null);
       speechTimeoutRef.current = null;
@@ -150,12 +175,17 @@ export default function Home() {
 
     switch (tile.type) {
       case "event": {
-        setCurrentEvent(randomItem(events));
+        setCurrentEvent(localizeEvent(randomItem(events), locale));
         setIsEventModalOpen(true);
         break;
       }
       case "resource": {
-        const resource = randomItem(resources);
+        const resourceIndex = Math.floor(Math.random() * resources.length);
+        const resource = localizeResource(
+          resources[resourceIndex],
+          resourceIndex,
+          locale,
+        );
         openNotice({
           title: resource.title,
           description: resource.description,
@@ -164,7 +194,12 @@ export default function Home() {
         break;
       }
       case "special": {
-        const special = randomItem(specialTiles);
+        const specialIndex = Math.floor(Math.random() * specialTiles.length);
+        const special = localizeSpecialTile(
+          specialTiles[specialIndex],
+          specialIndex,
+          locale,
+        );
         openNotice({
           title: special.title,
           description: special.description,
@@ -260,6 +295,26 @@ export default function Home() {
     setScreen("game");
   }
 
+  function handleContinueGame() {
+    const saved = loadGameState();
+    if (!saved) return;
+    setStats(saved.stats);
+    setPosition(saved.position);
+    setDisplayPosition(saved.displayPosition);
+    setTurnCount(saved.turnCount);
+    setSkipTurns(saved.skipTurns);
+    setLastRoll(null);
+    setSpeechText(null);
+    setCurrentEvent(null);
+    setIsEventModalOpen(false);
+    setNotice(null);
+    setDicePhase(null);
+    setIsMoving(false);
+    setEndPhase(null);
+    setEnding(null);
+    setScreen("game");
+  }
+
   function handleExitGame() {
     clearGameState();
     resetToNewGame();
@@ -268,7 +323,7 @@ export default function Home() {
   }
 
   function handleViewIdentity() {
-    setEnding(resolveEnding(stats));
+    setEnding(localizeEnding(resolveEnding(stats), locale));
     setEndPhase("identity");
   }
 
@@ -301,13 +356,15 @@ export default function Home() {
     setEndPhase("over");
   }, [screen, turnCount, isBusy, endPhase]);
 
-  const statKeys = Object.keys(STAT_LABELS) as (keyof PlayerStats)[];
+  const statKeys = STAT_KEYS;
 
   if (screen === "start") {
     return (
       <>
         <StartScreen
           onStart={handleStartGame}
+          onContinue={handleContinueGame}
+          hasSavedGame={hasSavedGame}
           onRules={() => setShowRules(true)}
         />
         <RulesModal isOpen={showRules} onClose={() => setShowRules(false)} />
@@ -324,16 +381,23 @@ export default function Home() {
           <header className="relative shrink-0 pb-1 text-center">
             <button
               type="button"
+              onClick={() => setShowRules(true)}
+              className="absolute left-0 top-0 rounded-lg border border-stone-300/60 bg-[#efe9df] px-2 py-1 text-[10px] font-medium text-stone-700 hover:bg-[#e8e0d4] sm:px-3 sm:text-xs"
+            >
+              {ui.game.rules}
+            </button>
+            <button
+              type="button"
               onClick={() => setShowExitConfirm(true)}
               className="absolute right-0 top-0 rounded-lg border border-stone-300/60 bg-[#efe9df] px-2 py-1 text-[10px] font-medium text-stone-700 hover:bg-[#e8e0d4] sm:px-3 sm:text-xs"
             >
-              Exit game
+              {ui.game.exit}
             </button>
             <h1 className="font-serif text-xl font-semibold tracking-tight sm:text-2xl">
               Her Field
             </h1>
             <p className="mt-0.5 text-[10px] tabular-nums text-stone-500 sm:hidden">
-              Turn {turnCount} / {MAX_TURNS} · {turnsRemaining} left
+              {ui.game.turnMobile(turnCount, MAX_TURNS, turnsRemaining)}
             </p>
           </header>
 
@@ -344,7 +408,7 @@ export default function Home() {
                 className="rounded-lg border border-stone-300/60 bg-[#f7f3ed] px-1.5 py-1 text-center shadow-sm sm:px-2 sm:py-1.5"
               >
                 <p className="truncate text-[9px] uppercase tracking-wide text-stone-500 sm:text-[10px]">
-                  {STAT_LABELS[key]}
+                  {statLabels[key]}
                 </p>
                 <p className="text-base font-semibold leading-tight tabular-nums sm:text-lg">
                   {stats[key]}
@@ -356,28 +420,28 @@ export default function Home() {
           <section className="relative flex min-h-0 flex-1 flex-col overflow-visible rounded-xl border border-stone-300/50 bg-[#f7f3ed] p-2 shadow-[0_4px_20px_rgba(68,64,60,0.08)] sm:p-3">
             <BoardDecorations items={outerDecorations} />
             <div className="shrink-0 flex flex-wrap items-center justify-center gap-1.5 pb-1 text-[10px] text-stone-600 sm:gap-2 sm:text-xs">
-              {tileLegend.map(({ type, name, colorClass }) => (
+              {tileLegend.map(({ type, colorClass }) => (
                 <span
                   key={type}
                   className={`inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 sm:px-2 ${colorClass}`}
                 >
                   <TileIcon type={type} className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                  <span className="font-medium">{name}</span>
+                  <span className="font-medium">{getTileLabel(locale, type)}</span>
                 </span>
               ))}
             </div>
 
             <div className="shrink-0 flex flex-wrap items-center justify-between gap-1 pb-1 text-[10px] text-stone-600 sm:text-xs">
               <span>
-                Tile {position + 1} · {tileTypeLabels[currentTile.type]}
+                {ui.game.tileInfo(position + 1, getTileLabel(locale, currentTile.type))}
               </span>
               <span className="flex gap-2 tabular-nums">
                 {lastRoll !== null && !isDiceActive && !isMoving && (
-                  <span>Rolled {lastRoll}</span>
+                  <span>{ui.game.rolled(lastRoll)}</span>
                 )}
                 {skipTurns > 0 && (
                   <span className="text-red-700">
-                    Skip {skipTurns} turn{skipTurns === 1 ? "" : "s"}
+                    {ui.game.skipTurns(skipTurns)}
                   </span>
                 )}
               </span>
@@ -442,14 +506,14 @@ export default function Home() {
               className="rounded-full border border-stone-400/70 bg-[#efe9df] px-6 py-2 text-xs font-medium text-stone-800 transition-colors hover:bg-[#e8e0d4] disabled:cursor-not-allowed disabled:opacity-50 sm:px-8 sm:py-2.5 sm:text-sm"
             >
               {turnCount >= MAX_TURNS
-                ? "Game over"
+                ? ui.game.gameOver
                 : skipTurns > 0 && !isModalOpen && !isDiceActive && !isMoving
-                  ? "Skip Turn"
+                  ? ui.game.skipTurn
                   : isDiceActive
-                    ? "Rolling…"
+                    ? ui.game.rolling
                     : isMoving
-                      ? "Moving…"
-                      : "Roll Dice"}
+                      ? ui.game.moving
+                      : ui.game.rollDice}
             </button>
           </div>
         </main>

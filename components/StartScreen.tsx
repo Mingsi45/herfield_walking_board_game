@@ -2,13 +2,23 @@
 
 import { CuteTennisPlayer } from "./cute/CuteArt";
 import { DecorationArt } from "./cute/CuteArt";
+import { useLanguage } from "../lib/i18n/LanguageProvider";
 
 type StartScreenProps = {
   onStart: () => void;
+  onContinue?: () => void;
   onRules: () => void;
+  hasSavedGame?: boolean;
 };
 
-export default function StartScreen({ onStart, onRules }: StartScreenProps) {
+export default function StartScreen({
+  onStart,
+  onContinue,
+  onRules,
+  hasSavedGame,
+}: StartScreenProps) {
+  const { ui } = useLanguage();
+
   return (
     <div className="relative flex h-dvh flex-col items-center justify-center overflow-hidden bg-[#f4efe6] px-4">
       <DecorationArt
@@ -35,7 +45,7 @@ export default function StartScreen({ onStart, onRules }: StartScreenProps) {
           Her Field
         </h1>
         <p className="mt-2 text-sm text-stone-600 sm:text-base">
-          A board game about women in sports
+          {ui.start.subtitle}
         </p>
 
         <button
@@ -43,14 +53,23 @@ export default function StartScreen({ onStart, onRules }: StartScreenProps) {
           onClick={onStart}
           className="mt-10 w-full rounded-2xl border border-stone-400/70 bg-stone-700 px-8 py-4 text-lg font-semibold text-[#f7f3ed] shadow-md transition-colors hover:bg-stone-800"
         >
-          Start Game
+          {ui.start.startGame}
         </button>
+        {hasSavedGame && onContinue && (
+          <button
+            type="button"
+            onClick={onContinue}
+            className="mt-4 w-full rounded-2xl border border-emerald-500/50 bg-emerald-50 px-8 py-3 text-base font-medium text-emerald-900 transition-colors hover:bg-emerald-100"
+          >
+            {ui.start.continueGame}
+          </button>
+        )}
         <button
           type="button"
           onClick={onRules}
-          className="mt-4 w-full rounded-2xl border border-stone-300/60 bg-[#efe9df] px-8 py-3 text-base font-medium text-stone-800 transition-colors hover:bg-[#e8e0d4]"
+          className={`w-full rounded-2xl border border-stone-300/60 bg-[#efe9df] px-8 py-3 text-base font-medium text-stone-800 transition-colors hover:bg-[#e8e0d4] ${hasSavedGame ? "mt-3" : "mt-4"}`}
         >
-          Rules
+          {ui.start.rules}
         </button>
       </div>
     </div>
