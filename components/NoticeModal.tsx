@@ -12,7 +12,6 @@ type NoticeModalProps = {
   isOpen: boolean;
   effects?: Effects;
   stats?: PlayerStats;
-  onClose: () => void;
   onConfirm: (newStats: PlayerStats) => void;
 };
 
@@ -22,7 +21,6 @@ export default function NoticeModal({
   isOpen,
   effects,
   stats,
-  onClose,
   onConfirm,
 }: NoticeModalProps) {
   const { ui } = useLanguage();
@@ -59,12 +57,9 @@ export default function NoticeModal({
       role="dialog"
       aria-modal="true"
     >
-      <button
-        type="button"
+      <div
         className="absolute inset-0 bg-stone-800/25 backdrop-blur-[2px]"
-        aria-label={ui.noticeModal.close}
-        onClick={phase === "preview" ? onClose : undefined}
-        disabled={phase === "result"}
+        aria-hidden
       />
 
       <div className="relative w-full max-w-md rounded-2xl border border-stone-300/50 bg-[#f7f3ed] p-6 shadow-[0_8px_30px_rgba(68,64,60,0.12)]">

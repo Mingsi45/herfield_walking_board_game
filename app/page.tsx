@@ -285,10 +285,6 @@ export default function Home() {
     closeNotice();
   }
 
-  function handleCloseEventModal() {
-    setIsEventModalOpen(false);
-  }
-
   function handleStartGame() {
     clearGameState();
     resetToNewGame();
@@ -357,6 +353,17 @@ export default function Home() {
   }, [screen, turnCount, isBusy, endPhase]);
 
   const statKeys = STAT_KEYS;
+
+  const rollDiceLabel =
+    turnCount >= MAX_TURNS
+      ? ui.game.gameOver
+      : skipTurns > 0 && !isModalOpen && !isDiceActive && !isMoving
+        ? ui.game.skipTurn
+        : isDiceActive
+          ? ui.game.rolling
+          : isMoving
+            ? ui.game.moving
+            : ui.game.rollDice;
 
   if (screen === "start") {
     return (
@@ -447,75 +454,77 @@ export default function Home() {
               </span>
             </div>
 
-            <div className="relative min-h-0 flex-1 overflow-visible">
-              <BoardDecorations items={innerDecorations} />
-              <div
-                className="grid h-full w-full gap-0.5 sm:gap-1"
-                style={{
-                  gridTemplateColumns: "repeat(7, minmax(0, 1fr))",
-                  gridTemplateRows: "repeat(6, minmax(0, 1fr))",
-                }}
-              >
-                {boardGrid.map((row, rowIndex) =>
-                  row.map((pathIndex, colIndex) => {
-                    if (pathIndex === null) {
+            <div className="relative flex min-h-0 flex-1 gap-2 overflow-visible sm:gap-3">
+              <div className="relative min-h-0 min-w-0 flex-1 overflow-visible">
+                <BoardDecorations items={innerDecorations} />
+                <div
+                  className="grid h-full w-full gap-0.5 sm:gap-1"
+                  style={{
+                    gridTemplateColumns: "repeat(7, minmax(0, 1fr))",
+                    gridTemplateRows: "repeat(6, minmax(0, 1fr))",
+                  }}
+                >
+                  {boardGrid.map((row, rowIndex) =>
+                    row.map((pathIndex, colIndex) => {
+                      if (pathIndex === null) {
+                        return (
+                          <div
+                            key={`${rowIndex}-${colIndex}`}
+                            className="min-h-0 min-w-0 rounded bg-[#ede8df]/50"
+                            aria-hidden
+                          />
+                        );
+                      }
+
+                      const tile = boardPath[pathIndex];
+                      const isCurrent = pathIndex === displayPosition;
+
                       return (
                         <div
                           key={`${rowIndex}-${colIndex}`}
-                          className="min-h-0 min-w-0 rounded bg-[#ede8df]/50"
-                          aria-hidden
-                        />
+                          className={`relative flex min-h-0 min-w-0 items-center justify-center rounded border text-center transition-all ${tileStyle(tile.type, isCurrent)}`}
+                          title={`${pathIndex + 1}. ${tile.type}`}
+                        >
+                          <TileIcon
+                            type={tile.type}
+                            className="h-[45%] w-[45%] max-h-6 max-w-6 sm:max-h-7 sm:max-w-7"
+                          />
+                        </div>
                       );
-                    }
+                    }),
+                  )}
+                </div>
 
-                    const tile = boardPath[pathIndex];
-                    const isCurrent = pathIndex === displayPosition;
+                <PlayerCharacter
+                  pathIndex={displayPosition}
+                  speechText={speechText}
+                />
 
-                    return (
-                      <div
-                        key={`${rowIndex}-${colIndex}`}
-                        className={`relative flex min-h-0 min-w-0 items-center justify-center rounded border text-center transition-all ${tileStyle(tile.type, isCurrent)}`}
-                        title={`${pathIndex + 1}. ${tile.type}`}
-                      >
-                        <TileIcon
-                          type={tile.type}
-                          className="h-[45%] w-[45%] max-h-6 max-w-6 sm:max-h-7 sm:max-w-7"
-                        />
-                      </div>
-                    );
-                  }),
+                {dicePhase && (
+                  <DiceRollOverlay phase={dicePhase} displayValue={diceDisplay} />
                 )}
               </div>
 
-              <PlayerCharacter
-                pathIndex={displayPosition}
-                speechText={speechText}
-              />
-
-              {dicePhase && (
-                <DiceRollOverlay phase={dicePhase} displayValue={diceDisplay} />
-              )}
+              <aside className="flex w-[4.5rem] shrink-0 flex-col justify-center sm:w-24 md:w-28">
+                <button
+                  type="button"
+                  onClick={handleRollDice}
+                  disabled={isBusy || turnCount >= MAX_TURNS}
+                  className="flex min-h-[7rem] flex-1 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-blue-400 bg-blue-100 px-2 py-4 text-center font-bold leading-tight text-blue-950 shadow-[0_6px_20px_rgba(96,140,200,0.25)] ring-4 ring-blue-200/60 transition-all hover:border-blue-500 hover:bg-blue-200 hover:shadow-[0_8px_24px_rgba(96,140,200,0.32)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 sm:min-h-[9rem] sm:rounded-2xl sm:px-3 sm:py-5 md:min-h-[10rem]"
+                >
+                  <span
+                    className="text-3xl leading-none sm:text-4xl"
+                    aria-hidden
+                  >
+                    🎲
+                  </span>
+                  <span className="text-[11px] uppercase tracking-wide sm:text-sm">
+                    {rollDiceLabel}
+                  </span>
+                </button>
+              </aside>
             </div>
           </section>
-
-          <div className="shrink-0 pt-2 text-center">
-            <button
-              type="button"
-              onClick={handleRollDice}
-              disabled={isBusy || turnCount >= MAX_TURNS}
-              className="rounded-full border border-stone-400/70 bg-[#efe9df] px-6 py-2 text-xs font-medium text-stone-800 transition-colors hover:bg-[#e8e0d4] disabled:cursor-not-allowed disabled:opacity-50 sm:px-8 sm:py-2.5 sm:text-sm"
-            >
-              {turnCount >= MAX_TURNS
-                ? ui.game.gameOver
-                : skipTurns > 0 && !isModalOpen && !isDiceActive && !isMoving
-                  ? ui.game.skipTurn
-                  : isDiceActive
-                    ? ui.game.rolling
-                    : isMoving
-                      ? ui.game.moving
-                      : ui.game.rollDice}
-            </button>
-          </div>
         </main>
       </div>
 
@@ -524,7 +533,6 @@ export default function Home() {
           event={currentEvent}
           stats={stats}
           isOpen={isEventModalOpen}
-          onClose={handleCloseEventModal}
           onComplete={handleEventComplete}
         />
       )}
@@ -536,7 +544,6 @@ export default function Home() {
           effects={notice.effects}
           stats={stats}
           isOpen
-          onClose={closeNotice}
           onConfirm={handleNoticeConfirm}
         />
       )}

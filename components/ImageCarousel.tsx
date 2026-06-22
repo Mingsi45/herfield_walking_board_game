@@ -52,6 +52,7 @@ export default function ImageCarousel({ images }: ImageCarouselProps) {
             alt={current.alt}
             width={720}
             height={480}
+            unoptimized
             className="max-h-[240px] w-full object-contain sm:max-h-[320px]"
             draggable={false}
           />

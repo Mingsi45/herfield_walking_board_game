@@ -11,7 +11,6 @@ type EventModalProps = {
   event: Pick<GameEvent, "title" | "description" | "image" | "choices">;
   stats: PlayerStats;
   isOpen: boolean;
-  onClose: () => void;
   onComplete: (choice: Choice, newStats: PlayerStats) => void;
 };
 
@@ -19,7 +18,6 @@ export default function EventModal({
   event,
   stats,
   isOpen,
-  onClose,
   onComplete,
 }: EventModalProps) {
   const { ui } = useLanguage();
@@ -58,12 +56,9 @@ export default function EventModal({
       aria-modal="true"
       aria-labelledby="event-modal-title"
     >
-      <button
-        type="button"
+      <div
         className="absolute inset-0 bg-stone-800/25 backdrop-blur-[2px]"
-        aria-label={ui.eventModal.close}
-        onClick={phase === "choose" ? onClose : undefined}
-        disabled={phase !== "choose"}
+        aria-hidden
       />
 
       <div
@@ -73,22 +68,11 @@ export default function EventModal({
             : "max-w-md p-6"
         }`}
       >
-        {phase === "choose" && (
-          <button
-            type="button"
-            onClick={onClose}
-            className="absolute right-4 top-4 text-stone-500 transition-colors hover:text-stone-800"
-            aria-label={ui.eventModal.close}
-          >
-            <span className="text-xl leading-none">&times;</span>
-          </button>
-        )}
-
         {phase !== "reality" && (
           <>
             <h2
               id="event-modal-title"
-              className="pr-8 font-serif text-xl font-semibold tracking-tight text-stone-800"
+              className="font-serif text-xl font-semibold tracking-tight text-stone-800"
             >
               {event.title}
             </h2>

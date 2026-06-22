@@ -11,6 +11,13 @@ export type RuleStep = {
   images: RuleStepImage[];
 };
 
+/** Bump when 规则介绍.docx images change (cache bust) */
+export const RULES_IMAGE_VERSION = "20260622";
+
+function ruleImage(file: string, alt: string): RuleStepImage {
+  return { src: `/rules/${file}?v=${RULES_IMAGE_VERSION}`, alt };
+}
+
 /** Content and images from 规则介绍.docx */
 export const RULE_STEPS: RuleStep[] = [
   {
@@ -21,7 +28,7 @@ export const RULE_STEPS: RuleStep[] = [
       "Walk for 20 turns in total.",
       "After 20 turns, the game ends automatically and gives you an ending.",
     ],
-    images: [{ src: "/rules/image1.png", alt: "Game goal" }],
+    images: [ruleImage("image1.png", "Game goal")],
   },
   {
     id: 2,
@@ -34,7 +41,7 @@ export const RULE_STEPS: RuleStep[] = [
       "Health: Your physical condition",
       "All four stats start at 100 and will change throughout the game.",
     ],
-    images: [{ src: "/rules/image2.png", alt: "Four stats" }],
+    images: [ruleImage("image2.png", "Four stats")],
   },
   {
     id: 3,
@@ -47,9 +54,9 @@ export const RULE_STEPS: RuleStep[] = [
       "After choosing, the game shows the real news story behind it",
     ],
     images: [
-      { src: "/rules/image3.png", alt: "Event tile example 1" },
-      { src: "/rules/image4.png", alt: "Event tile example 2" },
-      { src: "/rules/image5.png", alt: "Event tile example 3" },
+      ruleImage("image3.png", "Event tile example 1"),
+      ruleImage("image4.png", "Event tile example 2"),
+      ruleImage("image5.png", "Event tile example 3"),
     ],
   },
   {
@@ -60,8 +67,8 @@ export const RULE_STEPS: RuleStep[] = [
       "A daily event happens. Your stats go up or down directly. No choices available.",
     ],
     images: [
-      { src: "/rules/image6.png", alt: "Resource tile example 1" },
-      { src: "/rules/image7.png", alt: "Resource tile example 2" },
+      ruleImage("image6.png", "Resource tile example 1"),
+      ruleImage("image7.png", "Resource tile example 2"),
     ],
   },
   {
@@ -71,7 +78,7 @@ export const RULE_STEPS: RuleStep[] = [
       "Special Tiles:",
       "Injury or suspension. You must skip several turns and cannot move.",
     ],
-    images: [{ src: "/rules/image8.png", alt: "Special tile example" }],
+    images: [ruleImage("image8.png", "Special tile example")],
   },
   {
     id: 6,
@@ -82,7 +89,7 @@ export const RULE_STEPS: RuleStep[] = [
       "Each ending has: a title + a representative athlete + a short description.",
       'Tap "Save" to save the ending as an image.',
     ],
-    images: [{ src: "/rules/image9.png", alt: "Ending example" }],
+    images: [ruleImage("image9.png", "Ending example")],
   },
 ];
 
