@@ -54,6 +54,7 @@ import {
   STAT_KEYS,
   type PlayerStats,
 } from "../lib/gameStats";
+import { drawIndex, type TilePools } from "../lib/tilePool";
 import { TileIcon } from "../components/cute/CuteArt";
 
 type NoticePayload = {
@@ -106,7 +107,20 @@ export default function Home() {
   const [dicePhase, setDicePhase] = useState<"rolling" | "result" | null>(null);
   const [diceDisplay, setDiceDisplay] = useState(1);
   const [isMoving, setIsMoving] = useState(false);
+  const [tilePools, setTilePools] = useState<TilePools>(() => {
+    const fresh = createNewGameState();
+    return {
+      eventPool: fresh.eventPool,
+      resourcePool: fresh.resourcePool,
+      specialPool: fresh.specialPool,
+    };
+  });
   const speechTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const tilePoolsRef = useRef(tilePools);
+
+  useEffect(() => {
+    tilePoolsRef.current = tilePools;
+  }, [tilePools]);
 
   const isModalOpen = isEventModalOpen || notice !== null;
   const isDiceActive = dicePhase !== null;
@@ -152,6 +166,11 @@ export default function Home() {
     setIsMoving(false);
     setEndPhase(null);
     setEnding(null);
+    setTilePools({
+      eventPool: fresh.eventPool,
+      resourcePool: fresh.resourcePool,
+      specialPool: fresh.specialPool,
+    });
   }
 
   function advanceTurnCount() {
@@ -170,22 +189,21 @@ export default function Home() {
     setNotice(null);
   }
 
-  function handleLandOnTile(pathIndex: number) {
+  function handleLandOnTile(pathIndex: number, pools: TilePools) {
     const tile = boardPath[pathIndex];
 
     switch (tile.type) {
       case "event": {
-        setCurrentEvent(localizeEvent(randomItem(events), locale));
+        const { index, pool } = drawIndex(pools.eventPool, events.length);
+        setTilePools((prev) => ({ ...prev, eventPool: pool }));
+        setCurrentEvent(localizeEvent(events[index], locale));
         setIsEventModalOpen(true);
         break;
       }
       case "resource": {
-        const resourceIndex = Math.floor(Math.random() * resources.length);
-        const resource = localizeResource(
-          resources[resourceIndex],
-          resourceIndex,
-          locale,
-        );
+        const { index, pool } = drawIndex(pools.resourcePool, resources.length);
+        setTilePools((prev) => ({ ...prev, resourcePool: pool }));
+        const resource = localizeResource(resources[index], index, locale);
         openNotice({
           title: resource.title,
           description: resource.description,
@@ -194,12 +212,9 @@ export default function Home() {
         break;
       }
       case "special": {
-        const specialIndex = Math.floor(Math.random() * specialTiles.length);
-        const special = localizeSpecialTile(
-          specialTiles[specialIndex],
-          specialIndex,
-          locale,
-        );
+        const { index, pool } = drawIndex(pools.specialPool, specialTiles.length);
+        setTilePools((prev) => ({ ...prev, specialPool: pool }));
+        const special = localizeSpecialTile(specialTiles[index], index, locale);
         openNotice({
           title: special.title,
           description: special.description,
@@ -230,7 +245,7 @@ export default function Home() {
       setPosition(current);
       setTimeout(() => {
         setIsMoving(false);
-        handleLandOnTile(current);
+        handleLandOnTile(current, tilePoolsRef.current);
       }, LAND_PAUSE_MS);
     };
 
@@ -308,6 +323,11 @@ export default function Home() {
     setIsMoving(false);
     setEndPhase(null);
     setEnding(null);
+    setTilePools({
+      eventPool: saved.eventPool,
+      resourcePool: saved.resourcePool,
+      specialPool: saved.specialPool,
+    });
     setScreen("game");
   }
 
@@ -337,8 +357,20 @@ export default function Home() {
       displayPosition,
       turnCount,
       skipTurns,
+      eventPool: tilePools.eventPool,
+      resourcePool: tilePools.resourcePool,
+      specialPool: tilePools.specialPool,
     });
-  }, [screen, stats, position, displayPosition, turnCount, skipTurns, isGameOver]);
+  }, [
+    screen,
+    stats,
+    position,
+    displayPosition,
+    turnCount,
+    skipTurns,
+    tilePools,
+    isGameOver,
+  ]);
 
   useEffect(() => {
     if (

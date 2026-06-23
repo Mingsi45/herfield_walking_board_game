@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import type { Ending } from "../data/endings";
+import { renderEndingCardBlob } from "../lib/renderEndingCard";
 import { useLanguage } from "../lib/i18n/LanguageProvider";
 
 type EndingResultModalProps = {
@@ -21,13 +22,21 @@ export default function EndingResultModal({
 
   async function handleSaveImage() {
     try {
-      const res = await fetch(ending.image);
-      const blob = await res.blob();
+      const blob = await renderEndingCardBlob({
+        yourResults: ui.ending.yourResults,
+        title: ending.title,
+        tagline: ending.tagline,
+        conditionLabel: ending.conditionLabel,
+        athleteExampleLabel: ui.ending.athleteExample,
+        athleteExample: ending.athleteExample,
+        whyLabel: ui.ending.why,
+        athleteWhy: ending.athleteWhy,
+        imageSrc: ending.image,
+      });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      const ext = ending.image.split(".").pop() ?? "png";
       link.href = url;
-      link.download = `her-field-${ending.title.toLowerCase().replace(/\s+/g, "-")}.${ext}`;
+      link.download = `her-field-${ending.title.toLowerCase().replace(/\s+/g, "-")}.png`;
       link.click();
       URL.revokeObjectURL(url);
     } catch {
