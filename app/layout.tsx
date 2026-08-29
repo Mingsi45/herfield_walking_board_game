@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Her Field",
+  title: "Her Board",
   description: "A narrative board game about women in sports.",
 };
 

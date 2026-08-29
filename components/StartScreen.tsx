@@ -2,6 +2,7 @@
 
 import { CuteTennisPlayer } from "./cute/CuteArt";
 import { DecorationArt } from "./cute/CuteArt";
+import { GAME_TITLE } from "../lib/constants";
 import { useLanguage } from "../lib/i18n/LanguageProvider";
 
 type StartScreenProps = {
@@ -42,7 +43,7 @@ export default function StartScreen({
 
       <div className="relative z-10 w-full max-w-md text-center">
         <h1 className="font-serif text-4xl font-bold tracking-tight text-stone-800 sm:text-5xl">
-          Her Field
+          {GAME_TITLE}
         </h1>
         <p className="mt-2 text-sm text-stone-600 sm:text-base">
           {ui.start.subtitle}

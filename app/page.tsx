@@ -39,7 +39,7 @@ import {
   localizeSpecialTile,
 } from "../lib/i18n";
 import { useLanguage } from "../lib/i18n/LanguageProvider";
-import { MAX_TURNS } from "../lib/constants";
+import { GAME_TITLE, MAX_TURNS } from "../lib/constants";
 import {
   clearGameState,
   createNewGameState,
@@ -433,7 +433,7 @@ export default function Home() {
               {ui.game.exit}
             </button>
             <h1 className="font-serif text-xl font-semibold tracking-tight sm:text-2xl">
-              Her Field
+              {GAME_TITLE}
             </h1>
             <p className="mt-0.5 text-[10px] tabular-nums text-stone-500 sm:hidden">
               {ui.game.turnMobile(turnCount, MAX_TURNS, turnsRemaining)}
